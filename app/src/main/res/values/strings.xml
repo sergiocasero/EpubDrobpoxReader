@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Epub Drobpox Reader</string>
+    <string name="token_key">dropbox_token</string>
 </resources>
