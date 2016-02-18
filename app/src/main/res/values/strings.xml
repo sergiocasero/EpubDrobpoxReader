@@ -3,4 +3,5 @@
     <string name="token_key">dropbox_token</string>
     <string name="epub_extension">.epub</string>
     <string name="my_books">Mis libros</string>
+    <string name="all_books_ready">Todos los libros se han descargado!</string>
 </resources>
