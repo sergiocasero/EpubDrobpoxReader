@@ -6,4 +6,10 @@
         android:icon="@drawable/ic_dashboard_white_24dp"
         android:title="@string/change_layout"
         app:showAsAction="always"></item>
+
+    <item
+        android:id="@+id/change_order"
+        android:icon="@drawable/ic_dashboard_white_24dp"
+        android:title="@string/change_order"
+        app:showAsAction="always"></item>
 </menu>

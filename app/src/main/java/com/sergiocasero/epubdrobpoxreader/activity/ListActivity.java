@@ -121,7 +121,6 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
             menuItem.setIcon(R.drawable.ic_list_white_24dp);
         }
         showLinearLayout = !showLinearLayout;
-        showMessage(R.string.changing_layout_message);
     }
 
     private void registerListeners() {
@@ -161,6 +160,7 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
     }
 
     public void initBookDownloads() {
+        showMessage(R.string.downloading_message);
         FilesNameRetriever retriever = new FilesNameRetriever();
         retriever.execute();
         progressBar.show();
