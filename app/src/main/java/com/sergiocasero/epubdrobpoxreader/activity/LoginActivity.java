@@ -26,6 +26,8 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.login_button)
     Button login;
 
+    private SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,10 +44,11 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 dropboxAPI.getSession().finishAuthentication();
 
-                SharedPreferences preferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 String accessToken = dropboxAPI.getSession().getOAuth2AccessToken();
                 editor.putString(getString(R.string.token_key), accessToken);
+
+                editor.commit();
 
                 Intent intent = new Intent(LoginActivity.this, ListActivity.class);
                 startActivity(intent);
@@ -60,6 +63,13 @@ public class LoginActivity extends AppCompatActivity {
         AppKeyPair keys = new AppKeyPair(Util.APP_KEY, Util.APP_SECRET);
         AndroidAuthSession session = new AndroidAuthSession(keys);
         dropboxAPI = new DropboxAPI<>(session);
+
+        // TODO: 17/2/16 Remove provisional
+        preferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        if (preferences.getString(getString(R.string.token_key), "") != "") {
+            Intent intent = new Intent(LoginActivity.this, ListActivity.class);
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.login_button)
