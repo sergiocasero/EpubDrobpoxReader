@@ -13,10 +13,17 @@ public class BookModel extends RealmObject {
 
     @PrimaryKey
     private String name;
+
+    private String title;
+
     private String cover;
+
     private RealmList<AuthorModel> authors;
+
     private RealmList<AuthorModel> contributors;
+
     private String languaje;
+
     private RealmList<DescriptionModel> descriptions;
 
     public BookModel() {
@@ -28,6 +35,14 @@ public class BookModel extends RealmObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public RealmList<AuthorModel> getAuthors() {

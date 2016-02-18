@@ -1,14 +1,13 @@
 package com.sergiocasero.epubdrobpoxreader.model;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by sergiocasero on 18/2/16.
  */
 public class AuthorModel extends RealmObject {
-    @PrimaryKey
     private String firstname;
+
     private String lastname;
 
     public AuthorModel() {
@@ -34,4 +33,5 @@ public class AuthorModel extends RealmObject {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
+
 }

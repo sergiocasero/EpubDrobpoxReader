@@ -16,6 +16,7 @@ import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AppKeyPair;
 import com.sergiocasero.epubdrobpoxreader.R;
 import com.sergiocasero.epubdrobpoxreader.adapter.BooksAdapter;
+import com.sergiocasero.epubdrobpoxreader.application.EpubApplication;
 import com.sergiocasero.epubdrobpoxreader.mapper.BookModelMapper;
 import com.sergiocasero.epubdrobpoxreader.model.BookModel;
 import com.sergiocasero.epubdrobpoxreader.util.Util;
@@ -28,7 +29,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
-import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.epub.EpubReader;
 
 public class ListActivity extends AppCompatActivity {
@@ -70,7 +70,7 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void initRealm() {
-        realm = Realm.getInstance(this);
+        realm = Realm.getInstance(EpubApplication.getInstance());
     }
 
     private void initUI() {
@@ -101,12 +101,30 @@ public class ListActivity extends AppCompatActivity {
         retriever.execute();
     }
 
-    public void getBooks(List<String> fileNames) {
-        DownloadBook downloadBook;
-        for (String fileName : fileNames) {
-            downloadBook = new DownloadBook();
-            downloadBook.execute(fileName);
+    public void getBooks(List<String> fileNamesWithPath) {
+        for (final String fileName : fileNamesWithPath) {
+            DownloadBook downloadBook;
+            BookModel bookModel = realm.where(BookModel.class).equalTo(BookModel.PRIMARY_KEY_FIELD, getBookName(fileName)).findFirst();
+            if (bookModel == null) {
+                downloadBook = new DownloadBook();
+                downloadBook.execute(fileName);
+            } else {
+                adapter.add(bookModel);
+            }
         }
+    }
+
+    private String getBookName(String filePath) {
+        String[] pathParts = filePath.split(slash);
+        String name = pathParts[pathParts.length - 1];
+        return name.replace(getString(R.string.epub_extension), EMPTY_TEXT);
+    }
+
+
+    private void saveBookToRealm(BookModel bookModel) {
+        realm.beginTransaction();
+        realm.copyToRealm(bookModel);
+        realm.commitTransaction();
     }
 
     private class FilesNameRetriever extends AsyncTask<Void, Void, List<DropboxAPI.Entry>> {
@@ -124,25 +142,28 @@ public class ListActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(List<DropboxAPI.Entry> result) {
-            List<String> fileNames = new ArrayList<>();
+            List<String> fileNamesWithPath = new ArrayList<>();
             for (DropboxAPI.Entry entry : result) {
-                fileNames.add(entry.path);
+                fileNamesWithPath.add(entry.path);
             }
-            getBooks(fileNames);
+            getBooks(fileNamesWithPath);
         }
     }
 
-    private class DownloadBook extends AsyncTask<String, String, Book> {
+    private class DownloadBook extends AsyncTask<String, String, BookModel> {
 
         @Override
-        protected Book doInBackground(String... params) {
+        protected BookModel doInBackground(String... params) {
             try {
+
                 String filePath = params[0];
+                BookModelMapper bookModelMapper = new BookModelMapper();
                 InputStream in = dropboxAPI.getFileStream(filePath, EMPTY_TEXT);
                 EpubReader epubReader = new EpubReader();
+                BookModel bookModel = bookModelMapper.dataToModel(epubReader.readEpub(in));
+                bookModel.setName(getBookName(filePath));
 
-
-                return epubReader.readEpub(in);
+                return bookModel;
 
             } catch (IOException | DropboxException e) {
                 e.printStackTrace();
@@ -156,15 +177,9 @@ public class ListActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Book book) {
-            BookModelMapper bookModelMapper = new BookModelMapper();
-            try {
-                BookModel bookModel = bookModelMapper.dataToModel(book);
-                adapter.add(bookModel);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        protected void onPostExecute(BookModel bookModel) {
+            adapter.add(bookModel);
+            saveBookToRealm(bookModel);
         }
     }
-
 }
