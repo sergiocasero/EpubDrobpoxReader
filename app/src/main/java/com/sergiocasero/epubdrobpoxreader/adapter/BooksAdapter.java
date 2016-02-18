@@ -25,10 +25,13 @@ import butterknife.ButterKnife;
  */
 public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHolder> {
 
+    public static final int LINEAR_TYPE = 0;
+    public static final int GRID_TYPE = 1;
     List<BookModel> items;
 
     private OnItemClickListener onItemClickListener;
     private int lastPosition = 0;
+    private int itemViewType;
 
     public BooksAdapter(List<BookModel> items) {
         this.items = items;
@@ -41,8 +44,10 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
 
     @Override
     public BookViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        int layoutResourceId = viewType == 0 ? R.layout.list_item : R.layout.grid_item;
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item, parent, false);
+                .inflate(layoutResourceId, parent, false);
+
         return new BookViewHolder(v);
     }
 
@@ -69,6 +74,15 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return itemViewType;
+    }
+
+    public void setItemViewType(int itemViewType) {
+        this.itemViewType = itemViewType;
     }
 
     public class BookViewHolder extends RecyclerView.ViewHolder {

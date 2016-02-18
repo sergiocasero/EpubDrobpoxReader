@@ -4,4 +4,6 @@
     <string name="epub_extension">.epub</string>
     <string name="my_books">Mis libros</string>
     <string name="all_books_ready">Todos los libros se han descargado!</string>
+    <string name="change_layout">Cambiar tipo de vista</string>
+    <string name="changing_layout_message">Cambiando tipo de vista...</string>
 </resources>

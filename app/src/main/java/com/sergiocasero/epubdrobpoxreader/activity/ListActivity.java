@@ -9,10 +9,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.dropbox.client2.DropboxAPI;
@@ -72,6 +76,8 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
 
     private int booksLoaded;
 
+    private boolean showLinearLayout = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +90,38 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
         initUI();
         initBookDownloads();
         registerListeners();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.change_layout:
+                changeLayout(item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void changeLayout(MenuItem menuItem) {
+        if (showLinearLayout) {
+            bookList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            adapter.setItemViewType(BooksAdapter.LINEAR_TYPE);
+            menuItem.setIcon(R.drawable.ic_dashboard_white_24dp);
+        } else {
+            bookList.setLayoutManager(new GridLayoutManager(this, 6));
+            adapter.setItemViewType(BooksAdapter.GRID_TYPE);
+            menuItem.setIcon(R.drawable.ic_list_white_24dp);
+        }
+        showLinearLayout = !showLinearLayout;
+        showMessage(R.string.changing_layout_message);
     }
 
     private void registerListeners() {
@@ -161,11 +199,15 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
         realm.commitTransaction();
     }
 
+    private void showMessage(int messageId) {
+        Snackbar.make(container, messageId, Snackbar.LENGTH_LONG).show();
+    }
+
     @Override
     public void onBookLoaded() {
         if (booksLoaded == totalBooks) {
             progressBar.setProgress(100);
-            Snackbar.make(container, R.string.all_books_ready, Snackbar.LENGTH_LONG).show();
+            showMessage(R.string.all_books_ready);
             progressBar.hide();
         }
     }
