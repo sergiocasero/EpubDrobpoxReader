@@ -43,6 +43,8 @@ public class BookModelMapper implements Mapper<BookModel, Book> {
             bookModel.setLanguaje(data.getMetadata().getLanguage());
             bookModel.setTitle(data.getTitle());
 
+            bookModel.setDate(data.getMetadata().getDates().get(0).toString());
+
             RealmList<DescriptionModel> descriptionModels = new RealmList<>();
 
             List<String> descriptions = data.getMetadata().getDescriptions();

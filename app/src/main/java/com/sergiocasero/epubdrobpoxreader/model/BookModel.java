@@ -26,6 +26,8 @@ public class BookModel extends RealmObject {
 
     private RealmList<DescriptionModel> descriptions;
 
+    private String date;
+
     public BookModel() {
     }
 
@@ -86,4 +88,11 @@ public class BookModel extends RealmObject {
     }
 
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

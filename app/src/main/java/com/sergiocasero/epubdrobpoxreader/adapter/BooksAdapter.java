@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.sergiocasero.epubdrobpoxreader.R;
 import com.sergiocasero.epubdrobpoxreader.model.BookModel;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -27,6 +29,9 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
 
     public static final int LINEAR_TYPE = 0;
     public static final int GRID_TYPE = 1;
+    public static final int ITEM_GRID_WIDTH_DP = 140;
+
+
     List<BookModel> items;
 
     private OnItemClickListener onItemClickListener;
@@ -83,6 +88,26 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
 
     public void setItemViewType(int itemViewType) {
         this.itemViewType = itemViewType;
+    }
+
+    public void orderByName() {
+        Collections.sort(items, new Comparator<BookModel>() {
+            @Override
+            public int compare(final BookModel object1, final BookModel object2) {
+                return object1.getName().compareTo(object2.getName());
+            }
+        });
+        notifyDataSetChanged();
+    }
+
+    public void orderByDate() {
+        Collections.sort(items, new Comparator<BookModel>() {
+            @Override
+            public int compare(final BookModel object1, final BookModel object2) {
+                return object1.getDate().compareTo(object2.getDate());
+            }
+        });
+        notifyDataSetChanged();
     }
 
     public class BookViewHolder extends RecyclerView.ViewHolder {

@@ -76,7 +76,9 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
 
     private int booksLoaded;
 
-    private boolean showLinearLayout = false;
+    private boolean linearLayout = false;
+
+    private boolean orderByName = false;
 
 
     @Override
@@ -105,22 +107,40 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
             case R.id.change_layout:
                 changeLayout(item);
                 return true;
+            case R.id.change_order:
+                changeOrder(item);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void changeOrder(MenuItem menuItem) {
+        if (orderByName) {
+            adapter.orderByName();
+            menuItem.setIcon(R.drawable.ic_date_range_white_24dp);
+
+        } else {
+            adapter.orderByDate();
+            menuItem.setIcon(R.drawable.ic_filter_list_white_24dp);
+        }
+        orderByName = !orderByName;
+    }
+
     private void changeLayout(MenuItem menuItem) {
-        if (showLinearLayout) {
+        if (linearLayout) {
+
             bookList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             adapter.setItemViewType(BooksAdapter.LINEAR_TYPE);
             menuItem.setIcon(R.drawable.ic_dashboard_white_24dp);
         } else {
-            bookList.setLayoutManager(new GridLayoutManager(this, 6));
+            int count = container.getWidth() / Util.dpToPx(BooksAdapter.ITEM_GRID_WIDTH_DP, getApplicationContext());
+            bookList.setLayoutManager(new GridLayoutManager(this, count));
             adapter.setItemViewType(BooksAdapter.GRID_TYPE);
+
             menuItem.setIcon(R.drawable.ic_list_white_24dp);
         }
-        showLinearLayout = !showLinearLayout;
+        linearLayout = !linearLayout;
     }
 
     private void registerListeners() {
