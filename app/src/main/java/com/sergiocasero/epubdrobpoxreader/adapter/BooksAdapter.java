@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.sergiocasero.epubdrobpoxreader.R;
 import com.sergiocasero.epubdrobpoxreader.model.BookModel;
+import com.sergiocasero.epubdrobpoxreader.util.Util;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -135,8 +136,7 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BookViewHold
         }
 
         public void bind(BookModel model) {
-            byte[] encodeByte = Base64.decode(model.getCover(), Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            Bitmap bitmap = Util.stringToBitMap(model.getCover());
             cover.setImageBitmap(bitmap);
             title.setText(model.getTitle());
         }

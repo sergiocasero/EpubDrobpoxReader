@@ -1,14 +1,10 @@
 package com.sergiocasero.epubdrobpoxreader.mapper;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-
 import com.sergiocasero.epubdrobpoxreader.model.AuthorModel;
 import com.sergiocasero.epubdrobpoxreader.model.BookModel;
 import com.sergiocasero.epubdrobpoxreader.model.DescriptionModel;
+import com.sergiocasero.epubdrobpoxreader.util.Util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -34,10 +30,7 @@ public class BookModelMapper implements Mapper<BookModel, Book> {
             bookModel = new BookModel();
 
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            BitmapFactory.decodeStream(data.getCoverImage().getInputStream()).compress(Bitmap.CompressFormat.PNG, 100, baos);
-            byte[] b = baos.toByteArray();
-            String cover = Base64.encodeToString(b, Base64.DEFAULT);
+            String cover = Util.resourceToString(data.getCoverImage().getInputStream());
 
             bookModel.setCover(cover);
             bookModel.setLanguaje(data.getMetadata().getLanguage());

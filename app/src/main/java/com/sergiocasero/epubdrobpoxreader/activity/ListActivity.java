@@ -1,5 +1,6 @@
 package com.sergiocasero.epubdrobpoxreader.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -148,6 +149,10 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
             @Override
             public void onItemClick(View v, int position) {
                 Log.i(TAG, "Hello " + position);
+                Intent intent = new Intent(ListActivity.this, DetailActivity.class);
+                intent.putExtra(BookModel.PRIMARY_KEY_FIELD, bookModels.get(position).getName());
+
+                startActivity(intent);
             }
         });
     }
