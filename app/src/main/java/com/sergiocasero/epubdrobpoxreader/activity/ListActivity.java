@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
@@ -81,6 +83,16 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
         initDropboxApi();
         initUI();
         initBookDownloads();
+        registerListeners();
+    }
+
+    private void registerListeners() {
+        adapter.setOnItemClickListener(new BooksAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Log.i(TAG, "Hello " + position);
+            }
+        });
     }
 
     private void initRealm() {
