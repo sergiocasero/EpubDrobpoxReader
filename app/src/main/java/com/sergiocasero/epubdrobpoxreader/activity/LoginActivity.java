@@ -66,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
         AndroidAuthSession session = new AndroidAuthSession(keys);
         dropboxAPI = new DropboxAPI<>(session);
 
-        // TODO: 17/2/16 Remove provisional
         preferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
         if (preferences.getString(getString(R.string.token_key), "") != "") {
             Intent intent = new Intent(LoginActivity.this, ListActivity.class);
