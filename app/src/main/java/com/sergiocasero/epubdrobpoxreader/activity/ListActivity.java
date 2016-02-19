@@ -3,10 +3,13 @@ package com.sergiocasero.epubdrobpoxreader.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +17,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -148,11 +150,20 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
         adapter.setOnItemClickListener(new BooksAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Log.i(TAG, "Hello " + position);
                 Intent intent = new Intent(ListActivity.this, DetailActivity.class);
-                intent.putExtra(BookModel.PRIMARY_KEY_FIELD, bookModels.get(position).getName());
 
-                startActivity(intent);
+                intent.putExtra(BookModel.PRIMARY_KEY_FIELD, bookModels.get(position).getName());
+                Pair<View, String> p1 = Pair.create(v.findViewById(R.id.cover), "coverTransition");
+                Pair<View, String> p2 = Pair.create(v.findViewById(R.id.title), "titleTransition");
+                Pair<View, String> p3 = Pair.create(findViewById(R.id.toolbar), "toolbarTransition");
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(ListActivity.this, p1, p2, p3);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    startActivity(intent, options.toBundle());
+                } else {
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -175,7 +186,7 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
 
     private void initDropboxApi() {
         SharedPreferences preferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-        String token = preferences.getString(getString(R.string.token_key), "");
+        String token = preferences.getString(getString(R.string.token_key), EMPTY_TEXT);
 
         AppKeyPair keys = new AppKeyPair(Util.APP_KEY, Util.APP_SECRET);
         AndroidAuthSession session = new AndroidAuthSession(keys);
@@ -204,8 +215,8 @@ public class ListActivity extends AppCompatActivity implements OnBookLoaded {
                 downloadBook.execute(fileName);
             } else {
                 adapter.add(bookModel);
-                booksLoaded++;
                 progressBar.setProgress(progress);
+                booksLoaded++;
                 this.onBookLoaded();
             }
         }

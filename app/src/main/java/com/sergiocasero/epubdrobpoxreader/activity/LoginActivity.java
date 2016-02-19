@@ -53,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this, ListActivity.class);
                 startActivity(intent);
 
+                finish();
+
             } catch (IllegalStateException e) {
                 Log.e(TAG, "Error authenticating", e);
             }

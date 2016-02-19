@@ -16,7 +16,8 @@
         <ImageView
             android:id="@+id/cover"
             android:layout_width="80dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:transitionName="coverTransition" />
 
         <TextView
             android:id="@+id/title"
@@ -25,6 +26,7 @@
             android:layout_gravity="center"
             android:paddingLeft="10dp"
             android:textSize="16sp"
+            android:transitionName="titleTransition"
             tools:text="Hello book!" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

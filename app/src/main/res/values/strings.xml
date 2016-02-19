@@ -8,4 +8,5 @@
     <string name="changing_layout_message">Cambiando tipo de vista...</string>
     <string name="downloading_message">Cargando los libros...</string>
     <string name="change_order">Cambiando el orden...</string>
+    <string name="authors">Autores</string>
 </resources>
